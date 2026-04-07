@@ -32,9 +32,20 @@ async function fetchStats() {
 
     if (json.result === 'success') {
       const dbData = json.data;
-      // 첫번째 행은 헤더이므로 제외
-      const rows = dbData.slice(1);
-      processAndRender(rows);
+      
+      let rows;
+      let headerOffset = 0;
+      
+      // 첫 번째 행이 헤더인지 확인 ('주문시각' 문자열로 식별)
+      if (dbData.length > 0 && dbData[0][0] === '주문시각') {
+        rows = dbData.slice(1);
+        headerOffset = 1; // 1번째 줄이 헤더이므로 실제 데이터는 2번 줄부터 시작
+      } else {
+        rows = dbData;
+        headerOffset = 0; // 헤더가 없으므로 실제 데이터는 1번 줄부터 시작
+      }
+
+      processAndRender(rows, headerOffset);
     } else {
       loadingState.innerHTML = `<p style="color:var(--danger)">데이터를 불러오는데 실패했습니다: ${json.message}</p>`;
     }
@@ -44,7 +55,7 @@ async function fetchStats() {
   }
 }
 
-function processAndRender(rows) {
+function processAndRender(rows, headerOffset) {
   let totalRevenue = 0;
   let hotOrders = 0;
   let icedOrders = 0;
@@ -53,13 +64,9 @@ function processAndRender(rows) {
   // 최신 데이터 우선 정렬 (기본적으로 배열의 원본 보존 후 역순 렌더링)
   const reversedRows = [...rows].reverse();
 
-  // 테이블 행 생성용
-  let tableHTML = '';
-
+  // 첫 번째 순회: 통계 집계용 (원본 rows 기준, 혹은 reversedRows도 무관)
   rows.forEach(row => {
     // row = [주문시각, 주문자, 온도, 메뉴(콤마로 구분), 합계(원)]
-    const time = row[0];
-    const name = row[1];
     const temp = row[2];
     const itemsStr = row[3];
     const price = Number(row[4]) || 0;
@@ -78,18 +85,15 @@ function processAndRender(rows) {
     }
   });
 
-  // 테이블 HTML 작성
+  // 두 번째 순회: 테이블 및 요약 HTML 생성용 (역순 reversedRows 기준)
+  let tableHTML = '';
   let summaryHTML = '';
 
-  // Data processing and table construction
   reversedRows.forEach((row, revIndex) => {
-    // 실제 시트 상의 원본 인덱스는 row 배열이 아님.
-    // map을 돌린게 아니므로 여기서 계산해야 함.
-    // 현재 rows 배치는 원본 시트순. reversedRows는 역순.
-    // revIndex가 0이면 rows 배열의 제일 끝 요소. (rows.length - 1 - revIndex)
-    // 원본 시트의 Row 번호 (헤더 제외) = (rows.length - 1 - revIndex) + 2
-
-    const sheetRowId = (rows.length - 1 - revIndex) + 2;
+    // 실제 시트 상의 원본 인덱스는 rows 원본 배열 기준 (rows.length - 1 - revIndex)
+    // 시트 행 번호는 1부터 시작하며, 위에서 계산한 headerOffset을 더함
+    const originalIndex = rows.length - 1 - revIndex;
+    const sheetRowId = originalIndex + 1 + headerOffset;
 
     const time = row[0];
     const name = row[1];
