@@ -511,6 +511,16 @@ body {
   color: rgba(28,20,16,0.35);
 }
 
+.admin-link {
+  text-decoration: none;
+  opacity: 0.1;
+  margin-left: 8px;
+  transition: opacity 0.2s;
+}
+.admin-link:hover {
+  opacity: 0.8;
+}
+
 /* ── PRINT ── */
 @media print {
   body * { visibility: hidden; }

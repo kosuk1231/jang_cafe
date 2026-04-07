@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>장카페 관리자 대시보드</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <header class="admin-header">
+    <div class="header-inner">
+      <h1 class="header-title">장카페 대시보드</h1>
+      <p class="header-sub">통계 및 주문 내역 관리</p>
+    </div>
+    <a href="index.html" class="back-link">← 주문 화면으로 돌아가기</a>
+  </header>
+
+  <main class="admin-container">
+    
+    <div id="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>데이터를 불러오는 중입니다...</p>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div id="dashboard" class="dashboard-grid" style="display: none;">
+      
+      <!-- Top Cards -->
+      <div class="summary-cards">
+        <div class="admin-card primary-card">
+          <p class="card-label">총 누적 매출액</p>
+          <h2 class="card-value gold" id="totalRevenue">0원</h2>
+        </div>
+        <div class="admin-card">
+          <p class="card-label">총 주문 건수</p>
+          <h2 class="card-value" id="totalOrders">0건</h2>
+        </div>
+        <div class="admin-card">
+          <p class="card-label">HOT 주문</p>
+          <h2 class="card-value" id="hotCount">0건</h2>
+        </div>
+        <div class="admin-card">
+          <p class="card-label">ICED 주문</p>
+          <h2 class="card-value" id="icedCount">0건</h2>
+        </div>
+      </div>
+
+      <!-- Charts Area -->
+      <div class="charts-area">
+        <div class="admin-card chart-wrapper">
+          <h3 class="card-subtitle">탑 인기 메뉴 TOP 5</h3>
+          <div class="canvas-container">
+            <canvas id="menuChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="admin-card chart-wrapper donut-wrapper">
+          <h3 class="card-subtitle">HOT vs ICED 비율</h3>
+          <div class="canvas-container">
+            <canvas id="tempChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Orders List -->
+      <div class="admin-card full-width">
+        <div class="card-header">
+          <h3 class="card-subtitle">최근 주문 내역</h3>
+          <button id="refreshBtn" class="refresh-btn">새로고침 ↺</button>
+        </div>
+        <div class="table-responsive">
+          <table class="recent-orders-table">
+            <thead>
+              <tr>
+                <th>주문시각</th>
+                <th>주문자</th>
+                <th>온도</th>
+                <th>주문 메뉴</th>
+                <th class="text-right">합계금액</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- JS Injected -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

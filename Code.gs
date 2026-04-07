@@ -29,6 +29,14 @@ function doGet(e) {
       sheet.getRange(1, 1, 1, 5).setFontWeight('bold');
     }
 
+    // action이 getStats인 경우 통계 데이터 반환
+    if (e.parameter.action === 'getStats') {
+      const data = sheet.getDataRange().getValues();
+      return ContentService
+        .createTextOutput(JSON.stringify({ result: 'success', data: data }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     const { timestamp, name, temp, items, total } = e.parameter;
 
     sheet.appendRow([
