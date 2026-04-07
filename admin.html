@@ -68,10 +68,18 @@
         </div>
       </div>
 
+      <!-- Name & Orders Summary Area -->
+      <div class="admin-card full-width">
+        <h3 class="card-subtitle">주문자별 상세 요약</h3>
+        <div id="ordersSummaryText" class="orders-summary-text">
+          <!-- JS Injected -->
+        </div>
+      </div>
+
       <!-- Recent Orders List -->
       <div class="admin-card full-width">
         <div class="card-header">
-          <h3 class="card-subtitle">최근 주문 내역</h3>
+          <h3 class="card-subtitle">전체 주문 내역</h3>
           <button id="refreshBtn" class="refresh-btn">새로고침 ↺</button>
         </div>
         <div class="table-responsive">
@@ -83,6 +91,7 @@
                 <th>온도</th>
                 <th>주문 메뉴</th>
                 <th class="text-right">합계금액</th>
+                <th class="text-center">관리</th>
               </tr>
             </thead>
             <tbody id="ordersTableBody">

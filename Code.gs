@@ -37,6 +37,17 @@ function doGet(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // action이 deleteRow인 경우 통계 데이터 삭제
+    if (e.parameter.action === 'deleteRow') {
+      const rowIndex = Number(e.parameter.row);
+      if (rowIndex && rowIndex > 1) {
+        sheet.deleteRow(rowIndex);
+      }
+      return ContentService
+        .createTextOutput(JSON.stringify({ result: 'success' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     const { timestamp, name, temp, items, total } = e.parameter;
 
     sheet.appendRow([

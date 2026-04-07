@@ -14,6 +14,7 @@ const totalOrdersEl = document.getElementById('totalOrders');
 const hotCountEl = document.getElementById('hotCount');
 const icedCountEl = document.getElementById('icedCount');
 const ordersTableBody = document.getElementById('ordersTableBody');
+const ordersSummaryText = document.getElementById('ordersSummaryText');
 const refreshBtn = document.getElementById('refreshBtn');
 
 // Chart instances
@@ -77,14 +78,30 @@ function processAndRender(rows) {
     }
   });
 
-  // 테이블 HTML 작성 (최신 50개만)
-  reversedRows.slice(0, 50).forEach(row => {
+  // 테이블 HTML 작성
+  let summaryHTML = '';
+
+  // Data processing and table construction
+  reversedRows.forEach((row, revIndex) => {
+    // 실제 시트 상의 원본 인덱스는 row 배열이 아님.
+    // map을 돌린게 아니므로 여기서 계산해야 함.
+    // 현재 rows 배치는 원본 시트순. reversedRows는 역순.
+    // revIndex가 0이면 rows 배열의 제일 끝 요소. (rows.length - 1 - revIndex)
+    // 원본 시트의 Row 번호 (헤더 제외) = (rows.length - 1 - revIndex) + 2
+
+    const sheetRowId = (rows.length - 1 - revIndex) + 2;
+
     const time = row[0];
     const name = row[1];
     const temp = row[2];
     const itemsStr = row[3];
     const price = Number(row[4]) || 0;
     
+    // 요약 콤포넌트 구성을 위해 추가
+    if (name && itemsStr) {
+      summaryHTML += `<span class="summary-tag"><strong>${name}</strong>: ${itemsStr}</span>`;
+    }
+
     const tempClass = temp === 'HOT' ? 'temp-hot' : 'temp-iced';
 
     tableHTML += `
@@ -94,6 +111,7 @@ function processAndRender(rows) {
         <td><span class="temp-badge ${tempClass}">${temp}</span></td>
         <td>${itemsStr}</td>
         <td class="text-right"><strong>${price.toLocaleString()}원</strong></td>
+        <td class="text-center"><button class="delete-btn" onclick="deleteOrder(${sheetRowId})">삭제</button></td>
       </tr>
     `;
   });
@@ -103,7 +121,8 @@ function processAndRender(rows) {
   totalOrdersEl.textContent = rows.length + '건';
   hotCountEl.textContent = hotOrders + '건';
   icedCountEl.textContent = icedOrders + '건';
-  ordersTableBody.innerHTML = tableHTML || '<tr><td colspan="5" class="text-center">주문 내역이 없습니다.</td></tr>';
+  ordersSummaryText.innerHTML = summaryHTML || '주문 내역이 없습니다.';
+  ordersTableBody.innerHTML = tableHTML || '<tr><td colspan="6" class="text-center">주문 내역이 없습니다.</td></tr>';
 
   // 메뉴 카운트 정렬 (Top 5)
   const sortedMenu = Object.entries(menuCounts)
@@ -171,6 +190,31 @@ function renderCharts(menuLabels, menuData, hot, iced) {
       }
     }
   });
+}
+
+async function deleteOrder(rowId) {
+  if (!confirm('정말로 이 주문을 취소/삭제하시겠습니까? (복구할 수 없습니다)')) return;
+
+  try {
+    loadingState.style.display = 'flex';
+    dashboardGrid.style.display = 'none';
+
+    // 삭제 실행
+    const res = await fetch(`${SCRIPT_URL}?action=deleteRow&row=${rowId}&_t=${new Date().getTime()}`);
+    const json = await res.json();
+
+    if (json.result === 'success') {
+      alert('주문이 성공적으로 삭제되었습니다.');
+      fetchStats(); // 재랜더링
+    } else {
+      alert('삭제 중 오류가 발생했습니다: ' + json.message);
+      fetchStats();
+    }
+  } catch (err) {
+    alert('네트워크 오류가 발생했습니다. Apps Script 배포를 최신 버전으로 업데이트했는지 확인해주세요.');
+    console.error(err);
+    fetchStats();
+  }
 }
 
 refreshBtn.addEventListener('click', fetchStats);

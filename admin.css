@@ -223,6 +223,48 @@ body {
 }
 .temp-hot { background: #fee2e2; color: #b91c1c; }
 .temp-iced { background: #e0f2fe; color: #0369a1; }
+.text-center { text-align: center !important; }
+
+/* ── ORDERS SUMMARY ── */
+.orders-summary-text {
+  background: var(--bg);
+  padding: 1rem;
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  border: 1px dashed var(--brown-mid);
+}
+.summary-tag {
+  display: inline-block;
+  background: var(--white);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  margin: 0.2rem;
+  border: 1px solid var(--bg2);
+  color: var(--text-mid);
+  font-weight: 500;
+}
+.summary-tag strong {
+  color: var(--dark);
+}
+
+/* ── DELETE BTN ── */
+.delete-btn {
+  background: var(--danger);
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.delete-btn:hover {
+  background: #b91c1c;
+}
 
 @media (max-width: 768px) {
   .charts-area { grid-template-columns: 1fr; }
