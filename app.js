@@ -44,7 +44,6 @@ const rcptItems     = document.getElementById('rcptItems');
 const rcptTotal     = document.getElementById('rcptTotal');
 const rcptStatus    = document.getElementById('rcptStatus');
 const closeModalBtn = document.getElementById('closeModal');
-const printModalBtn = document.getElementById('printModal');
 const toast         = document.getElementById('toast');
 
 // ── 메뉴 그리드 렌더링 ──────────────────────────────────
@@ -185,8 +184,6 @@ closeModalBtn.addEventListener('click', () => {
 modalOverlay.addEventListener('click', e => {
   if (e.target === modalOverlay) modalOverlay.classList.remove('open');
 });
-
-printModalBtn.addEventListener('click', () => window.print());
 
 // ── 토스트 ───────────────────────────────────────────────
 function showToast(msg) {
