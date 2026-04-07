@@ -8,7 +8,7 @@
 // SHEET_ID: 스프레드시트 URL의 /d/XXXX/edit 부분의 XXXX
 // SCRIPT_URL: Google Apps Script 웹 앱 배포 URL
 const SHEET_ID = '1wFkyU9i3sFnxuyMKIwpP-dP2zdVmLCLLGprU8wSe3FA';
-const SCRIPT_URL = ''; // ← Apps Script 배포 후 URL 입력
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweYFH2HJYzAQgfabDPFD8P5eTV8dGDlnfdukS_s_umcJ2On0wSSSDxqQhwL3JUSK4BrA/exec'; // ← Apps Script 배포 후 URL 입력
 
 // ── 메뉴 데이터 ──────────────────────────────────────────
 // hot: HOT 가격(원), ice: ICED 가격(원), null = 해당 없음
